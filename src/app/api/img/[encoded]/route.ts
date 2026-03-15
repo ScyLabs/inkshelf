@@ -5,14 +5,6 @@ import { lookupLocalImage } from '@/lib/archive';
 import { readFile } from 'node:fs/promises';
 
 const REFERER_MAP: Record<string, string> = {
-  'cdn.readdetectiveconan.com': 'https://mangapill.com/',
-  'www.scan-vf.net': 'https://www.scan-vf.net/',
-  'scan-vf.net': 'https://www.scan-vf.net/',
-  'sushiscan.net': 'https://sushiscan.net/',
-  'www.sushiscan.net': 'https://sushiscan.net/',
-  'imgsrv4.com': 'https://www.mgeko.cc/',
-  'h5.manimg24.com': 'https://harimanga.me/',
-  'api.punkrecordz.com': 'https://punkrecordz.com/',
 };
 
 const USER_AGENT =

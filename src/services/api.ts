@@ -175,12 +175,3 @@ export async function fetchArchiveStatus(mangaSlug: string): Promise<ArchiveStat
   return res.json();
 }
 
-/** @deprecated Use fetchMangaChapters('one_piece') instead */
-export async function fetchCatalogue(): Promise<CatalogueEntry[]> {
-  return fetchMangaChapters('one_piece');
-}
-
-/** @deprecated Use fetchMangaChapter('one_piece', slug) instead */
-export async function fetchChapter(slug: string): Promise<ChapterData> {
-  return fetchMangaChapter('one_piece', slug);
-}

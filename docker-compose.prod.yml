@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://inkshelf:inkshelf@postgres:5432/inkshelf
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - traefik-public
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inkshelf.rule=Host(`inkshelf.asciacca.dev`)"
+      - "traefik.http.routers.inkshelf.entrypoints=websecure"
+      - "traefik.http.routers.inkshelf.tls.certresolver=letsencrypt"
+      - "traefik.http.services.inkshelf.loadbalancer.server.port=3000"
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=inkshelf
+      - POSTGRES_PASSWORD=inkshelf
+      - POSTGRES_DB=inkshelf
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inkshelf"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  traefik-public:
+    external: true
+  internal:
+
+volumes:
+  postgres-data:

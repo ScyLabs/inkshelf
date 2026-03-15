@@ -40,7 +40,7 @@ function ArchiveBadge({ status }: { status: ArchiveStatusResponse }) {
           <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
-          En attente...
+          Pending...
         </span>
       );
     case 'downloading':
@@ -69,7 +69,7 @@ function ArchiveBadge({ status }: { status: ArchiveStatusResponse }) {
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          Partiel
+          Partial
         </span>
       );
     case 'failed':
@@ -79,7 +79,7 @@ function ArchiveBadge({ status }: { status: ArchiveStatusResponse }) {
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
-          Échec
+          Failed
         </span>
       );
     default:
@@ -106,9 +106,8 @@ export default function CataloguePage() {
 
   const progress = useProgressStore((s) => s.progress);
 
-  // Build a progress lookup that handles slug changes from colored chapter merging.
-  // Old progress may be keyed by ScanVF slug (chapitre-122) while entries now use
-  // MangaPill colored slugs. Fallback to matching by chapter number.
+  // Build a progress lookup that handles slug changes.
+  // Fallback to matching by chapter number.
   const resolvedProgress = useMemo(() => {
     const byNumber = new Map<number, ReadingProgress>();
     for (const p of Object.values(progress)) {
@@ -394,7 +393,7 @@ export default function CataloguePage() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-orange-400">
-                      {bulkDownload.completedChapters}/{bulkDownload.totalChapters} chapitres
+                      {bulkDownload.completedChapters}/{bulkDownload.totalChapters} chapters
                     </span>
                     <span className="text-zinc-500">
                       {bulkDownload.totalChapters > 0
@@ -449,7 +448,7 @@ export default function CataloguePage() {
                 : 'bg-zinc-900 text-zinc-400 hover:text-white'
             }`}
           >
-            {batchMode ? 'Annuler' : 'Marquer lu jusqu\'au...'}
+            {batchMode ? 'Cancel' : 'Mark read up to...'}
           </button>
         </div>
       )}

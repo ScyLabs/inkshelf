@@ -2,7 +2,7 @@ import postgres from 'postgres';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from './schema';
 
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgres://onepiece:onepiece@localhost:5432/onepiece';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgres://inkshelf:inkshelf@localhost:5432/inkshelf';
 
 let _sql: ReturnType<typeof postgres> | null = null;
 let _db: PostgresJsDatabase<typeof schema> | null = null;

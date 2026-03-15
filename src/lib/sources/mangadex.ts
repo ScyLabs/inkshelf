@@ -28,7 +28,7 @@ async function fetchJson<T>(url: string): Promise<T> {
   const response = await fetch(url, {
     next: { revalidate: 3600 },
     headers: {
-      'User-Agent': 'OnePieceReader/1.0',
+      'User-Agent': 'InkShelf/1.0',
     },
   });
   if (!response.ok) {
@@ -113,7 +113,6 @@ export function createMangaDexSource(): MangaSource {
           'order[followedCount]': 'desc',
           'contentRating[]': 'safe',
         });
-        params.append('contentRating[]', 'suggestive');
 
         const data = await fetchJson<{ data: MangaDexManga[]; total: number }>(
           `${API_BASE}/manga?${params.toString()}`,
@@ -186,7 +185,6 @@ export function createMangaDexSource(): MangaSource {
         'order[updatedAt]': 'desc',
         'contentRating[]': 'safe',
       });
-      params.append('contentRating[]', 'suggestive');
 
       const data = await fetchJson<{ data: MangaDexManga[]; total: number }>(
         `${API_BASE}/manga?${params.toString()}`,
@@ -198,7 +196,7 @@ export function createMangaDexSource(): MangaSource {
         coverUrl: getCoverUrl(manga),
         source: 'mangadex',
         language: 'fr',
-        latestChapter: manga.attributes.lastChapter ? `Chapitre ${manga.attributes.lastChapter}` : undefined,
+        latestChapter: manga.attributes.lastChapter ? `Chapter ${manga.attributes.lastChapter}` : undefined,
         updatedAt: manga.attributes.updatedAt ? Math.floor(new Date(manga.attributes.updatedAt).getTime() / 1000) : undefined,
       }));
     },
@@ -272,8 +270,8 @@ export function createMangaDexSource(): MangaSource {
           seen.add(num);
 
           const label = ch.attributes.title
-            ? `Chapitre ${num} - ${ch.attributes.title}`
-            : `Chapitre ${num}`;
+            ? `Chapter ${num} - ${ch.attributes.title}`
+            : `Chapter ${num}`;
 
           entries.push({
             slug: ch.id,
@@ -358,7 +356,7 @@ export function createMangaDexSource(): MangaSource {
       } catch { /* no next */ }
 
       const title = chapterData.data.attributes.chapter
-        ? `Chapitre ${chapterData.data.attributes.chapter}`
+        ? `Chapter ${chapterData.data.attributes.chapter}`
         : 'Chapter';
 
       return { images, prevSlug, nextSlug, title, mangaSlug, source: 'mangadex' };

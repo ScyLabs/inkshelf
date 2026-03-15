@@ -178,7 +178,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [userId, hydrateFromServer, updateLastUse, resetLibrary]);
 
   const readingLink = lastRead
-    ? `/read/${lastRead.mangaSlug ?? 'one_piece'}/${lastRead.chapterSlug}`
+    ? `/read/${lastRead.mangaSlug}/${lastRead.chapterSlug}`
     : '/';
 
   return (

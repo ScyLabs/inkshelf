@@ -10,10 +10,6 @@ const CHECK_BATCH_SIZE = 500;
 
 const SOURCE_DELAYS: Record<string, number> = {
   mangadex: 300,
-  scanvf: 200,
-  mangapill: 200,
-  mgeko: 200,
-  harimanga: 200,
 };
 
 interface ScrapeStatus {

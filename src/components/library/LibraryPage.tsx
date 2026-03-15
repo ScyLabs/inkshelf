@@ -18,7 +18,7 @@ const TABS: { value: Tab; label: string }[] = [
   { value: 'my-library', label: 'My Library' },
   { value: 'favorites', label: 'Favorites' },
   { value: 'all', label: 'All' },
-  { value: 'latest-updates', label: 'Derni\u00e8res MAJ' },
+  { value: 'latest-updates', label: 'Latest Updates' },
   { value: 'latest-new', label: 'New Releases' },
 ];
 
@@ -32,7 +32,7 @@ const LANGUAGES: { value: Language; label: string }[] = [
 const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: 'default', label: 'Newest' },
   { value: 'last-read', label: 'Last Read' },
-  { value: 'added-recent', label: 'Ajout r\u00e9cent' },
+  { value: 'added-recent', label: 'Recently Added' },
   { value: 'alphabetical', label: 'A-Z' },
 ];
 

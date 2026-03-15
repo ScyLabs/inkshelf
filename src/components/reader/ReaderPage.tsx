@@ -77,8 +77,8 @@ export default function ReaderPage() {
               <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
               <line x1="12" y1="20" x2="12.01" y2="20" />
             </svg>
-            <p>Hors ligne</p>
-            <p className="mt-1 text-zinc-400">Ce chapitre n&apos;est pas disponible hors connexion.</p>
+            <p>Offline</p>
+            <p className="mt-1 text-zinc-400">This chapter is not available offline.</p>
           </div>
         ) : (
           <div className="rounded-lg bg-red-950 p-4 text-center text-sm text-red-300">

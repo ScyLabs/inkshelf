@@ -134,7 +134,7 @@ export default function DownloadsPage() {
             <div className="mb-3 flex items-center justify-between">
               <Link href={`/manga/${group.mangaSlug}`} className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-white">{group.title}</p>
-                <p className="text-xs text-zinc-500">{group.chapters.length} chapitre{group.chapters.length > 1 ? 's' : ''}</p>
+                <p className="text-xs text-zinc-500">{group.chapters.length} chapter{group.chapters.length > 1 ? 's' : ''}</p>
               </Link>
             </div>
 

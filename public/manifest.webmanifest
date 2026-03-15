@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Manga Reader",
-  "short_name": "MangaReader",
-  "description": "Personal manga library reader",
+  "name": "InkShelf",
+  "short_name": "InkShelf",
+  "description": "Open-source comic and manga reader",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

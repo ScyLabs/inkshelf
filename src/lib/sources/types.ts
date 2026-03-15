@@ -1,4 +1,4 @@
-export type SourceId = 'scanvf' | 'mangapill' | 'mangadex' | 'mgeko' | 'harimanga' | 'punkrecordz';
+export type SourceId = 'mangadex';
 export type Language = 'fr' | 'en';
 
 export interface MangaSourceResult {

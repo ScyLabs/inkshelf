@@ -2,11 +2,6 @@ import type { MangaSourceResult, SourceId } from '@/lib/sources/types';
 
 const SOURCE_PRIORITY: Record<SourceId, number> = {
   mangadex: 4,
-  scanvf: 3,
-  punkrecordz: 3,
-  mangapill: 2,
-  mgeko: 1,
-  harimanga: 0,
 };
 
 export function normalizeTitle(title: string): string {

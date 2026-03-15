@@ -35,3 +35,4 @@ public/swe-worker-*.js
 
 # Progress data
 data/
+node_modules/\n.next/\n.env\n.env.local\ndata/\nmanga-data/\nlogs/\n*.log\n.claude/

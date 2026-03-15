@@ -40,14 +40,14 @@ export default function ChapterTransition({ currentSlug, nextSlug, nextTitle, ma
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
         <polyline points="20 6 9 17 4 12" />
       </svg>
-      <p className="text-lg font-semibold text-white">Chapitre terminé !</p>
+      <p className="text-lg font-semibold text-white">Chapter complete!</p>
       {nextSlug ? (
         <button
           type="button"
           onClick={() => { flushPendingPush(); router.push(`/read/${mangaSlug}/${nextSlug}`); }}
           className="mt-2 rounded-lg bg-orange-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-orange-600 active:bg-orange-700"
         >
-          Suivant : {nextTitle || formatChapterSlug(nextSlug)}
+          Next: {nextTitle || formatChapterSlug(nextSlug)}
         </button>
       ) : (
         <p className="text-sm text-zinc-400">Tu es à jour !</p>

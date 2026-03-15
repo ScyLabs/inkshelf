@@ -123,7 +123,7 @@ export default function SettingsPage() {
             </svg>
             <div>
               <p className="text-sm text-white">Downloads</p>
-              <p className="text-xs text-zinc-500">{downloadCount} chapitre{downloadCount !== 1 ? 's' : ''}</p>
+              <p className="text-xs text-zinc-500">{downloadCount} chapter{downloadCount !== 1 ? 's' : ''}</p>
             </div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500">

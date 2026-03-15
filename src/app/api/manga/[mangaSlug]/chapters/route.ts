@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveSourceFromMangaSlug } from "@/lib/sources";
 import { getCachedChapters, upsertChapters } from "@/lib/db/cache";
-import { getColoredCounterpart } from "@/lib/sources/coloredMappings";
-import { mergeWithColoredChapters } from "@/lib/sources/coloredMerge";
 
 export async function GET(
   _request: NextRequest,
@@ -13,7 +11,6 @@ export async function GET(
 
     const source = resolveSourceFromMangaSlug(mangaSlug);
     if (!source) {
-      // No source — return stored data if available
       const cached = await getCachedChapters(mangaSlug);
       if (cached) {
         return NextResponse.json(cached, {
@@ -26,41 +23,17 @@ export async function GET(
       );
     }
 
-    // Always attempt fresh scrape
     try {
-      // Fetch B&W and colored chapters in parallel if a colored counterpart exists
-      // Only merge if both sources share the same language (never mix fr/en)
-      const coloredSlug = getColoredCounterpart(mangaSlug);
-      const coloredSourceCandidate = coloredSlug ? resolveSourceFromMangaSlug(coloredSlug) : null;
-      const coloredSource = coloredSourceCandidate?.language === source.language
-        ? coloredSourceCandidate
-        : null;
+      const entries = await source.fetchChapters(mangaSlug);
+      await upsertChapters(mangaSlug, entries);
 
-      const [entries, coloredEntries] = await Promise.all([
-        source.fetchChapters(mangaSlug),
-        coloredSource
-          ? coloredSource.fetchChapters(coloredSlug!).catch(async (err) => {
-              console.warn(`[chapters] Colored fetch failed for ${mangaSlug}:`, err);
-              // Fallback to previously cached colored chapters
-              return await getCachedChapters(coloredSlug!) ?? [];
-            })
-          : Promise.resolve([]),
-      ]);
-
-      const finalEntries = coloredEntries.length > 0
-        ? mergeWithColoredChapters(entries, coloredEntries, mangaSlug)
-        : entries;
-
-      await upsertChapters(mangaSlug, finalEntries);
-
-      return NextResponse.json(finalEntries, {
+      return NextResponse.json(entries, {
         headers: {
           "Cache-Control":
             "public, s-maxage=3600, stale-while-revalidate=86400",
         },
       });
     } catch (scrapeErr) {
-      // Source failed — fallback to stored data
       const cached = await getCachedChapters(mangaSlug);
       if (cached) {
         console.warn(`[chapters] Scrape failed for ${mangaSlug}, returning stored data`);

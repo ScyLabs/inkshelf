@@ -18,22 +18,9 @@ const RETRY_DELAY_MS = 1_000;
 
 const SOURCE_DELAYS: Record<string, number> = {
   mangadex: 300,
-  scanvf: 200,
-  mangapill: 200,
-  mgeko: 200,
-  harimanga: 200,
-  punkrecordz: 200,
 };
 
 const REFERER_MAP: Record<string, string> = {
-  'cdn.readdetectiveconan.com': 'https://mangapill.com/',
-  'www.scan-vf.net': 'https://www.scan-vf.net/',
-  'scan-vf.net': 'https://www.scan-vf.net/',
-  'sushiscan.net': 'https://sushiscan.net/',
-  'www.sushiscan.net': 'https://sushiscan.net/',
-  'imgsrv4.com': 'https://www.mgeko.cc/',
-  'h5.manimg24.com': 'https://harimanga.me/',
-  'api.punkrecordz.com': 'https://punkrecordz.com/',
 };
 
 const USER_AGENT =

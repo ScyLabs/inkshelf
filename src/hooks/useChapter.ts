@@ -41,7 +41,7 @@ export function useChapter(mangaSlug: string | undefined, chapterSlug: string | 
           const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
           setError(
             isOffline
-              ? 'Vous êtes hors ligne et ce chapitre n\'est pas téléchargé.'
+              ? 'You are offline and this chapter is not downloaded.'
               : (e as Error).message,
           );
           setIsLoading(false);
