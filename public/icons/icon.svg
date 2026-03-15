@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="page-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e4e4e7"/>
+      <stop offset="100%" stop-color="#f4f4f5"/>
+    </linearGradient>
+    <linearGradient id="page-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#e4e4e7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- Subtle border glow -->
+  <rect x="2" y="2" width="508" height="508" rx="106" fill="none" stroke="#f97316" stroke-width="3" opacity="0.15"/>
+
+  <!-- Open book / manga - left page -->
+  <path d="M256 160 C230 155, 150 148, 120 155 L120 340 C150 333, 230 337, 256 345 Z"
+        fill="url(#page-left)" opacity="0.95"/>
+
+  <!-- Open book / manga - right page -->
+  <path d="M256 160 C282 155, 362 148, 392 155 L392 340 C362 333, 282 337, 256 345 Z"
+        fill="url(#page-right)" opacity="0.95"/>
+
+  <!-- Book spine shadow -->
+  <path d="M253 158 L253 345 L259 345 L259 158 Z" fill="#a1a1aa" opacity="0.3"/>
+
+  <!-- Manga panel lines on left page -->
+  <line x1="140" y1="185" x2="245" y2="183" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="140" y1="215" x2="245" y2="213" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="140" y1="245" x2="245" y2="243" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="140" y1="275" x2="245" y2="273" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="140" y1="305" x2="245" y2="303" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Manga panel lines on right page -->
+  <line x1="267" y1="183" x2="375" y2="185" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="267" y1="213" x2="375" y2="215" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="267" y1="243" x2="375" y2="245" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="267" y1="273" x2="375" y2="275" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+  <line x1="267" y1="303" x2="375" y2="305" stroke="#a1a1aa" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Orange bookmark ribbon -->
+  <path d="M310 148 L310 210 L325 195 L340 210 L340 148 Z" fill="url(#accent)" opacity="0.95"/>
+
+  <!-- "MR" text at bottom -->
+  <text x="256" y="420" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="800" font-size="60" fill="#f97316" letter-spacing="6">MR</text>
+
+  <!-- Subtle line under text -->
+  <line x1="196" y1="435" x2="316" y2="435" stroke="#f97316" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+</svg>

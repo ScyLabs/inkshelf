@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-onepiece-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-onepiece
+  labels:
+    app: postgres-onepiece
+spec:
+  serviceName: postgres-onepiece
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-onepiece
+  template:
+    metadata:
+      labels:
+        app: postgres-onepiece
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: onepiece
+            - name: POSTGRES_USER
+              value: onepiece
+            - name: POSTGRES_PASSWORD
+              value: onepiece
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "onepiece"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "onepiece"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-onepiece-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-onepiece
+spec:
+  selector:
+    app: postgres-onepiece
+  ports:
+    - port: 5432
+      targetPort: 5432

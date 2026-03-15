@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onepiece
+  labels:
+    app: onepiece
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onepiece
+  template:
+    metadata:
+      labels:
+        app: onepiece
+    spec:
+      containers:
+        - name: onepiece
+          image: localhost:5000/onepiece:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              value: postgres://onepiece:onepiece@postgres-onepiece:5432/onepiece
+            - name: ARCHIVE_PATH
+              value: /data/manga
+          volumeMounts:
+            - name: archive-data
+              mountPath: /data/manga
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: archive-data
+          persistentVolumeClaim:
+            claimName: archive-manga-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: onepiece
+spec:
+  selector:
+    app: onepiece
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: onepiece
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`piece.p1x3lz.io`)
+      kind: Rule
+      services:
+        - name: onepiece
+          port: 3000
+  tls:
+    certResolver: letsencrypt

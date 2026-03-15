@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: onepiece-postgres
+    environment:
+      POSTGRES_DB: onepiece
+      POSTGRES_USER: onepiece
+      POSTGRES_PASSWORD: onepiece_secret_password
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/init:/docker-entrypoint-initdb.d
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onepiece -d onepiece"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: onepiece-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://onepiece:onepiece_secret_password@postgres:5432/onepiece
+      - FLARESOLVERR_URL=http://flaresolverr:8191/v1
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+      - ./manga-data:/data/manga
+      - ./manga-data/archive-whitelist.json:/data/archive-whitelist.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.onepiece.rule=Host(`piece.p1x3lz.io`)"
+      - "traefik.http.routers.onepiece.entrypoints=websecure"
+      - "traefik.http.routers.onepiece.tls.certresolver=letsencrypt"
+      - "traefik.http.services.onepiece.loadbalancer.server.port=3000"
+    networks:
+      - default
+      - traefik-public
+
+  scraper:
+    build:
+      context: .
+      dockerfile: scraper/Dockerfile
+    container_name: onepiece-scrapper
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://onepiece:onepiece_secret_password@postgres:5432/onepiece
+      - FLARESOLVERR_URL=http://flaresolverr:8191/v1
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+    restart: unless-stopped
+
+networks:
+  traefik-public:
+    external: true
