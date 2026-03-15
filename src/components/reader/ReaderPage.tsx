@@ -57,7 +57,7 @@ export default function ReaderPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-ink-border border-t-ink-cyan" />
       </div>
     );
   }

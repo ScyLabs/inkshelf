@@ -12,14 +12,14 @@ export default function StatsPanel() {
   const maxActivity = Math.max(...stats.dailyActivity.map((d) => d.count), 1);
 
   return (
-    <div className="rounded-xl bg-zinc-900 p-4">
+    <div className="rounded-xl bg-ink-card p-4 border border-ink-border">
       <h2 className="mb-3 text-sm font-semibold text-white">Reading Stats</h2>
 
       <div className="mb-4 grid grid-cols-3 gap-2">
         <StatBox label="This Week" value={stats.chaptersThisWeek} />
         <StatBox label="Today" value={stats.chaptersToday} />
         <StatBox label="Total Read" value={stats.totalChaptersRead} />
-        <StatBox label="Manga" value={stats.totalMangaStarted} />
+        <StatBox label="Comics" value={stats.totalMangaStarted} />
         <StatBox label="Completion" value={`${stats.completionRate}%`} />
         <StatBox label="Streak" value={`${stats.currentStreak}d`} />
       </div>
@@ -29,7 +29,7 @@ export default function StatsPanel() {
         {stats.dailyActivity.map((day) => (
           <div
             key={day.date}
-            className={`flex-1 rounded-sm ${day.count > 0 ? 'bg-orange-500' : 'bg-zinc-700'}`}
+            className={`flex-1 rounded-sm ${day.count > 0 ? 'bg-ink-cyan' : 'bg-ink-border'}`}
             style={{
               height:
                 day.count > 0
@@ -46,8 +46,8 @@ export default function StatsPanel() {
 
 function StatBox({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg bg-zinc-800 p-2 text-center">
-      <p className="text-lg font-bold text-orange-500">{value}</p>
+    <div className="rounded-lg bg-ink-surface p-2 text-center border border-ink-border">
+      <p className="text-lg font-bold text-ink-cyan">{value}</p>
       <p className="text-xs text-zinc-400">{label}</p>
     </div>
   );

@@ -33,7 +33,7 @@ export default function SyncPanel() {
     'Sync Now';
 
   return (
-    <div className="rounded-xl bg-zinc-900 p-4">
+    <div className="rounded-xl bg-ink-card p-4 border border-ink-border">
       <h3 className="text-sm font-semibold text-white">Sync Progress</h3>
       <p className="mt-1 text-xs text-zinc-500">
         {chapterCount} chapter{chapterCount !== 1 ? 's' : ''} tracked
@@ -53,14 +53,14 @@ export default function SyncPanel() {
           type="button"
           onClick={handleSync}
           disabled={syncStatus === 'syncing'}
-          className={`w-full rounded-lg px-3 py-2.5 text-xs font-medium text-white transition-colors ${
+          className={`w-full rounded-xl px-3 py-2.5 text-xs font-medium text-white transition-all duration-200 ${
             syncStatus === 'syncing'
               ? 'bg-zinc-700 cursor-not-allowed'
               : syncStatus === 'error'
                 ? 'bg-red-600 hover:bg-red-700 active:bg-red-800'
                 : syncStatus === 'synced'
                   ? 'bg-green-600 hover:bg-green-700 active:bg-green-800'
-                  : 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700'
+                  : 'bg-ink-cyan text-ink-bg hover:bg-ink-cyan-dim'
           }`}
         >
           {syncLabel}

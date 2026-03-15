@@ -45,12 +45,12 @@ export default function ChapterTransition({ currentSlug, nextSlug, nextTitle, ma
         <button
           type="button"
           onClick={() => { flushPendingPush(); router.push(`/read/${mangaSlug}/${nextSlug}`); }}
-          className="mt-2 rounded-lg bg-orange-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-orange-600 active:bg-orange-700"
+          className="mt-2 rounded-xl bg-ink-cyan px-6 py-3 text-sm font-medium text-ink-bg transition-all duration-200 hover:bg-ink-cyan-dim active:scale-95"
         >
           Next: {nextTitle || formatChapterSlug(nextSlug)}
         </button>
       ) : (
-        <p className="text-sm text-zinc-400">Tu es à jour !</p>
+        <p className="text-sm text-zinc-400">You&apos;re all caught up!</p>
       )}
     </div>
   );

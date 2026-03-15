@@ -32,7 +32,7 @@ export default function ReaderOverlay({
     >
       {/* Top bar */}
       <div
-        className={`pointer-events-auto bg-black/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3 transition-transform duration-200 ${
+        className={`pointer-events-auto glass-strong px-4 py-3 flex items-center gap-3 transition-transform duration-200 ${
           visible ? 'translate-y-0' : '-translate-y-full'
         }`}
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
@@ -40,7 +40,7 @@ export default function ReaderOverlay({
         <button
           type="button"
           onClick={() => router.push(`/manga/${mangaSlug}`)}
-          className="shrink-0 rounded-lg p-1.5 text-zinc-300 hover:text-white transition-colors"
+          className="shrink-0 rounded-lg p-1.5 text-zinc-400 hover:text-white transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
@@ -51,7 +51,7 @@ export default function ReaderOverlay({
 
       {/* Bottom bar */}
       <div
-        className={`pointer-events-auto bg-black/80 backdrop-blur-sm px-4 py-3 flex items-center justify-between gap-4 transition-transform duration-200 ${
+        className={`pointer-events-auto glass-strong px-4 py-3 flex items-center justify-between gap-4 transition-transform duration-200 ${
           visible ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
@@ -62,7 +62,7 @@ export default function ReaderOverlay({
           disabled={!prevSlug}
           className="rounded-lg px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          Préc
+          Prev
         </button>
         <span className="text-sm font-medium tabular-nums text-white">
           {currentPage + 1} / {totalPages}
@@ -73,7 +73,7 @@ export default function ReaderOverlay({
           disabled={!nextSlug}
           className="rounded-lg px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          Suiv
+          Next
         </button>
       </div>
     </div>

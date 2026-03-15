@@ -34,7 +34,7 @@ export default function UserIdPanel() {
   }
 
   return (
-    <div className="rounded-xl bg-zinc-900 p-4">
+    <div className="rounded-xl bg-ink-card p-4 border border-ink-border">
       <h3 className="text-sm font-semibold text-white">User ID</h3>
       <p className="mt-1 text-xs text-zinc-500">
         Used to identify your reading progress across devices.
@@ -46,13 +46,13 @@ export default function UserIdPanel() {
       )}
 
       <div className="mt-3 flex items-center gap-2">
-        <code className="min-w-0 flex-1 truncate rounded-lg bg-zinc-800 px-3 py-2 text-xs text-zinc-300">
+        <code className="min-w-0 flex-1 truncate rounded-lg bg-ink-surface px-3 py-2 text-xs text-zinc-300 border border-ink-border">
           {userId}
         </code>
         <button
           type="button"
           onClick={handleCopy}
-          className="shrink-0 rounded-lg bg-zinc-800 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-zinc-700"
+          className="shrink-0 rounded-lg bg-ink-surface px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-ink-border border border-ink-border"
         >
           {copied ? 'Copied' : 'Copy'}
         </button>
@@ -64,13 +64,13 @@ export default function UserIdPanel() {
           placeholder="Paste another UUID..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-colors"
+          className="min-w-0 flex-1 rounded-lg border border-ink-border bg-ink-surface px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-ink-cyan/50 transition-colors"
         />
         <button
           type="button"
           onClick={handlePaste}
           disabled={!inputValue.trim()}
-          className="shrink-0 rounded-lg bg-orange-500 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-orange-600 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="shrink-0 rounded-lg bg-ink-cyan px-3 py-2 text-xs font-medium text-ink-bg transition-colors hover:bg-ink-cyan-dim disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Set
         </button>
@@ -82,7 +82,7 @@ export default function UserIdPanel() {
       <button
         type="button"
         onClick={regenerateId}
-        className="mt-3 w-full rounded-lg border border-zinc-700 px-3 py-2 text-xs font-medium text-zinc-400 transition-colors hover:text-white hover:bg-zinc-800"
+        className="mt-3 w-full rounded-lg border border-ink-border px-3 py-2 text-xs font-medium text-zinc-400 transition-colors hover:text-white hover:bg-ink-surface"
       >
         Regenerate ID
       </button>

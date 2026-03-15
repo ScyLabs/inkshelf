@@ -36,7 +36,7 @@ function ArchiveBadge({ status }: { status: ArchiveStatusResponse }) {
   switch (status.status) {
     case 'pending':
       return (
-        <span className="flex shrink-0 items-center gap-1 rounded-lg bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-500">
+        <span className="flex shrink-0 items-center gap-1 rounded-lg bg-ink-cyan/10 px-2 py-1 text-xs font-medium text-ink-cyan">
           <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
@@ -45,7 +45,7 @@ function ArchiveBadge({ status }: { status: ArchiveStatusResponse }) {
       );
     case 'downloading':
       return (
-        <span className="flex shrink-0 items-center gap-1 rounded-lg bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-500">
+        <span className="flex shrink-0 items-center gap-1 rounded-lg bg-ink-cyan/10 px-2 py-1 text-xs font-medium text-ink-cyan">
           <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
@@ -106,13 +106,10 @@ export default function CataloguePage() {
 
   const progress = useProgressStore((s) => s.progress);
 
-  // Build a progress lookup that handles slug changes.
-  // Fallback to matching by chapter number.
   const resolvedProgress = useMemo(() => {
     const byNumber = new Map<number, ReadingProgress>();
     for (const p of Object.values(progress)) {
       if (p.mangaSlug !== mangaSlug) continue;
-      // Match chapitre-X, chapter-X, or plain numeric slugs (e.g. "153")
       const match = p.chapterSlug.match(/(?:chapter|chapitre)-(\d+(?:\.\d+)?)$/)
         || p.chapterSlug.match(/^(\d+(?:\.\d+)?)$/);
       if (match) {
@@ -200,7 +197,6 @@ export default function CataloguePage() {
     if (mangaSlug) load(mangaSlug);
   }, [mangaSlug, load]);
 
-  // Mark chapter count as "seen" when catalogue loads (only increase, never decrease)
   useEffect(() => {
     if (mangaSlug && entries.length > 0 && !loading) {
       const current = useProgressStore.getState().seenChapterCounts[mangaSlug] ?? 0;
@@ -253,7 +249,7 @@ export default function CataloguePage() {
         <button
           type="button"
           onClick={() => router.push('/')}
-          className="shrink-0 rounded-lg p-1.5 text-zinc-300 hover:text-white transition-colors"
+          className="shrink-0 rounded-lg p-1.5 text-zinc-400 hover:text-white transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
@@ -271,44 +267,52 @@ export default function CataloguePage() {
         <button
           type="button"
           onClick={() => router.push(`/read/${mangaSlug}/${lastRead.chapterSlug}`)}
-          className="mb-4 w-full rounded-xl bg-zinc-900 p-4 text-left transition-colors hover:bg-zinc-800 active:bg-zinc-700"
+          className="mb-4 w-full rounded-xl bg-ink-card p-4 text-left transition-all duration-200 hover:bg-ink-surface border border-ink-border"
         >
-          <span className="text-xs font-medium uppercase tracking-wider text-orange-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-ink-cyan">
             Continue Reading
           </span>
           <p className="mt-1 text-sm font-medium text-white">
             {formatChapterSlug(lastRead.chapterSlug)}
           </p>
           <div className="mt-2 flex items-center gap-3">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-700">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-ink-border">
               <div
-                className="h-full rounded-full bg-orange-500 transition-all"
+                className="h-full rounded-full bg-ink-cyan transition-all"
                 style={{ width: `${lastRead.scrollPercent * 100}%` }}
               />
             </div>
-            <span className="shrink-0 text-xs text-orange-400">Continue</span>
+            <span className="shrink-0 text-xs text-ink-cyan">Continue</span>
           </div>
         </button>
       )}
 
-      <input
-        type="text"
-        placeholder="Search chapters..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="mb-3 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-colors"
-      />
+      <div className="relative mb-3">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search chapters..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-ink-border bg-ink-card pl-9 pr-3 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-ink-cyan/50 transition-all duration-200"
+        />
+      </div>
 
       <div className="mb-4 flex gap-2">
-        <div className="flex flex-1 gap-1 rounded-lg bg-zinc-900 p-1">
+        <div className="flex flex-1 gap-1 rounded-xl bg-ink-card p-1 border border-ink-border">
           {TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setFilterType(tab)}
-              className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                 filterType === tab
-                  ? 'bg-orange-500 text-white'
+                  ? 'bg-ink-cyan/15 text-ink-cyan'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
@@ -316,15 +320,15 @@ export default function CataloguePage() {
             </button>
           ))}
         </div>
-        <div className="flex gap-1 rounded-lg bg-zinc-900 p-1">
+        <div className="flex gap-1 rounded-xl bg-ink-card p-1 border border-ink-border">
           {VIEW_MODES.map((mode) => (
             <button
               key={mode}
               type="button"
               onClick={() => setViewMode(mode)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                 viewMode === mode
-                  ? 'bg-orange-500 text-white'
+                  ? 'bg-ink-cyan/15 text-ink-cyan'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
@@ -338,10 +342,10 @@ export default function CataloguePage() {
         <button
           type="button"
           onClick={() => setHideRead(!hideRead)}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+          className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
             hideRead
-              ? 'bg-orange-500/10 text-orange-500 border border-orange-500/30'
-              : 'bg-zinc-900 text-zinc-400 hover:text-white'
+              ? 'bg-ink-cyan/10 text-ink-cyan border border-ink-cyan/30'
+              : 'bg-ink-card text-zinc-400 hover:text-white border border-ink-border'
           }`}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -363,7 +367,7 @@ export default function CataloguePage() {
         <button
           type="button"
           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-          className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 rounded-xl bg-ink-card px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200 border border-ink-border"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points={sortOrder === 'asc' ? '18 15 12 9 6 15' : '6 9 12 15 18 9'} />
@@ -374,25 +378,24 @@ export default function CataloguePage() {
 
       {loading && (
         <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink-border border-t-ink-cyan" />
         </div>
       )}
 
       {error && (
-        <div className="rounded-lg bg-red-950 p-4 text-sm text-red-300">
+        <div className="rounded-xl bg-red-950/50 border border-red-900/30 p-4 text-sm text-red-300">
           {error}
         </div>
       )}
 
       {!loading && !error && (
         <div className="mb-3 flex flex-col gap-2">
-          {/* Bulk download button */}
           {(undownloadedCount > 0 || isBulkActive) && (
             isBulkActive ? (
-              <div className="flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-2">
+              <div className="flex items-center gap-2 rounded-xl bg-ink-card px-3 py-2 border border-ink-border">
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-orange-400">
+                    <span className="font-medium text-ink-cyan">
                       {bulkDownload.completedChapters}/{bulkDownload.totalChapters} chapters
                     </span>
                     <span className="text-zinc-500">
@@ -401,9 +404,9 @@ export default function CataloguePage() {
                         : 0}%
                     </span>
                   </div>
-                  <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-zinc-700">
+                  <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink-border">
                     <div
-                      className="h-full rounded-full bg-orange-500 transition-all"
+                      className="h-full rounded-full bg-ink-cyan transition-all"
                       style={{
                         width: `${bulkDownload.totalChapters > 0
                           ? (bulkDownload.completedChapters / bulkDownload.totalChapters) * 100
@@ -415,7 +418,7 @@ export default function CataloguePage() {
                 <button
                   type="button"
                   onClick={cancelBulkDownload}
-                  className="shrink-0 rounded-md p-1.5 text-zinc-400 hover:text-red-400 transition-colors"
+                  className="shrink-0 rounded-lg p-1.5 text-zinc-400 hover:text-red-400 transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" />
@@ -427,7 +430,7 @@ export default function CataloguePage() {
               <button
                 type="button"
                 onClick={() => startBulkDownload(mangaSlug, entries.map((e) => e.slug))}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink-card px-3 py-2 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200 border border-ink-border"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -442,10 +445,10 @@ export default function CataloguePage() {
           <button
             type="button"
             onClick={() => setBatchMode((v) => !v)}
-            className={`w-full rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+            className={`w-full rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 ${
               batchMode
-                ? 'bg-orange-500/10 text-orange-500 border border-orange-500/30'
-                : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                ? 'bg-ink-cyan/10 text-ink-cyan border border-ink-cyan/30'
+                : 'bg-ink-card text-zinc-400 hover:text-white border border-ink-border'
             }`}
           >
             {batchMode ? 'Cancel' : 'Mark read up to...'}

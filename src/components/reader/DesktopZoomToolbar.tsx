@@ -47,7 +47,7 @@ export default function DesktopZoomToolbar() {
       <button
         type="button"
         onClick={() => centerView(1)}
-        className="rounded-full px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-orange-500"
+        className="rounded-full px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-ink-cyan"
         title="Fit to width"
       >
         Fit

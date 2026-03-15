@@ -105,7 +105,7 @@ export default function DownloadsPage() {
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               confirmClearAll
                 ? 'bg-red-600 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                : 'bg-ink-card text-zinc-400 hover:text-white border border-ink-border'
             }`}
           >
             {clearing ? 'Deleting...' : confirmClearAll ? 'Confirm' : 'Delete All'}
@@ -116,12 +116,12 @@ export default function DownloadsPage() {
       {/* Empty state */}
       {totalCount === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-3 text-zinc-600">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-3 text-zinc-700">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          <p className="text-sm text-zinc-500">No downloaded chapters</p>
+          <p className="text-sm font-medium text-zinc-400">No downloaded chapters</p>
           <p className="mt-1 text-xs text-zinc-600">Downloaded chapters will appear here</p>
         </div>
       )}
@@ -129,7 +129,7 @@ export default function DownloadsPage() {
       {/* Manga groups */}
       <div className="flex flex-col gap-3">
         {groups.map((group) => (
-          <div key={group.mangaSlug} className="rounded-xl bg-zinc-900 p-4">
+          <div key={group.mangaSlug} className="rounded-xl bg-ink-card p-4 border border-ink-border">
             {/* Manga header */}
             <div className="mb-3 flex items-center justify-between">
               <Link href={`/manga/${group.mangaSlug}`} className="min-w-0 flex-1">
@@ -143,7 +143,7 @@ export default function DownloadsPage() {
               {group.chapters.map((ch) => {
                 const isDel = deleting.has(ch.key);
                 return (
-                  <div key={ch.key} className="flex items-center justify-between border-b border-zinc-800 py-2.5 last:border-0">
+                  <div key={ch.key} className="flex items-center justify-between border-b border-ink-border py-2.5 last:border-0">
                     <Link
                       href={`/read/${ch.mangaSlug}/${ch.chapterSlug}`}
                       className="min-w-0 flex-1"
@@ -158,7 +158,7 @@ export default function DownloadsPage() {
                       className="shrink-0 p-1.5 text-zinc-500 hover:text-red-400 transition-colors"
                     >
                       {isDel ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border border-zinc-600 border-t-orange-500" />
+                        <div className="h-4 w-4 animate-spin rounded-full border border-zinc-600 border-t-ink-cyan" />
                       ) : (
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="3 6 5 6 21 6" />

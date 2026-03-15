@@ -16,11 +16,11 @@ export default function VolumeAccordion({ group, mangaSlug, progress, batchMode,
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="rounded-xl bg-zinc-900 overflow-hidden">
+    <div className="rounded-xl bg-ink-card overflow-hidden border border-ink-border">
       <button
         type="button"
         onClick={() => setExpanded((prev) => !prev)}
-        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-zinc-800"
+        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-ink-surface"
       >
         <div>
           <p className="text-sm font-medium text-white">{group.label}</p>

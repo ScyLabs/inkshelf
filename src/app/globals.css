@@ -1,7 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  --color-ink-bg: #0a0a0f;
+  --color-ink-card: #12121a;
+  --color-ink-border: #1e1e2e;
+  --color-ink-cyan: #00d4ff;
+  --color-ink-cyan-dim: #00a3c7;
+  --color-ink-cyan-glow: rgba(0, 212, 255, 0.15);
+  --color-ink-purple: #7c3aed;
+  --color-ink-surface: #16161f;
+  --color-ink-gray: #1a1a2e;
+  --color-ink-gray-light: #2a2a3e;
+}
+
 body {
-  @apply bg-black text-white;
+  @apply bg-ink-bg text-white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @utility no-scrollbar {
@@ -10,4 +26,31 @@ body {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+@utility glass {
+  background: rgba(18, 18, 26, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 212, 255, 0.08);
+}
+
+@utility glass-strong {
+  background: rgba(18, 18, 26, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-fade-in {
+  animation: fadeInUp 0.3s ease-out both;
+}
+
+@utility animate-fade-in-delay {
+  animation: fadeInUp 0.3s ease-out 0.1s both;
 }

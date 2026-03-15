@@ -6,7 +6,6 @@ import { useLibraryStore, type SortMode } from '../../stores/libraryStore';
 import { useProgressStore } from '../../stores/progressStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import MangaCard from './MangaCard';
-import AlphaNav from './AlphaNav';
 import type { Language, MangaListItem, SourceId } from '../../types';
 import { formatMangaSlug, formatChapterSlug } from '../../lib/format';
 
@@ -15,19 +14,14 @@ const PAGE_SIZE = 20;
 type Tab = 'my-library' | 'favorites' | 'all' | 'latest-updates' | 'latest-new';
 
 const TABS: { value: Tab; label: string }[] = [
-  { value: 'my-library', label: 'My Library' },
+  { value: 'my-library', label: 'Library' },
   { value: 'favorites', label: 'Favorites' },
-  { value: 'all', label: 'All' },
-  { value: 'latest-updates', label: 'Latest Updates' },
-  { value: 'latest-new', label: 'New Releases' },
+  { value: 'all', label: 'Browse' },
+  { value: 'latest-updates', label: 'Latest' },
+  { value: 'latest-new', label: 'New' },
 ];
 
 const VALID_TABS = new Set(TABS.map(t => t.value));
-
-const LANGUAGES: { value: Language; label: string }[] = [
-  { value: 'fr', label: 'FR' },
-  { value: 'en', label: 'EN' },
-];
 
 const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: 'default', label: 'Newest' },
@@ -36,27 +30,25 @@ const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: 'alphabetical', label: 'A-Z' },
 ];
 
-function ChevronIcon({ up }: { up: boolean }) {
+function SearchIcon() {
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`transition-transform duration-200 ${up ? '' : 'rotate-180'}`}
-    >
-      <polyline points="18 15 12 9 6 15" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   );
 }
 
-function getLetterKey(title: string): string {
-  const first = title.charAt(0).toUpperCase();
-  return /[A-Z]/.test(first) ? first : '#';
+function SkeletonCard() {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-xl bg-ink-card animate-pulse border border-ink-border">
+      <div className="aspect-[3/4] w-full bg-ink-gray" />
+      <div className="p-3">
+        <div className="h-3.5 w-3/4 rounded bg-ink-gray" />
+        <div className="mt-2 h-2.5 w-1/2 rounded bg-ink-gray" />
+      </div>
+    </div>
+  );
 }
 
 export default function LibraryPage() {
@@ -78,7 +70,6 @@ export default function LibraryPage() {
   const setSortMode = useLibraryStore((s) => s.setSortMode);
 
   const language = useSettingsStore((s) => s.language);
-  const setLanguage = useSettingsStore((s) => s.setLanguage);
 
   const progress = useProgressStore((s) => s.progress);
   const followedSlugs = useProgressStore((s) => s.followedSlugs);
@@ -112,7 +103,6 @@ export default function LibraryPage() {
     load(language);
   }, [load, language]);
 
-  // Load latest data when switching to latest tabs
   useEffect(() => {
     if (tab === 'latest-updates') {
       loadLatest('updates', language);
@@ -121,7 +111,6 @@ export default function LibraryPage() {
     }
   }, [tab, language, loadLatest]);
 
-  // Server-side search (debounced) — skip for user tabs (local filtering)
   useEffect(() => {
     if (!isUserTab) doSearch(search, language);
   }, [search, language, doSearch, isUserTab]);
@@ -129,7 +118,6 @@ export default function LibraryPage() {
   const isSearching = search.trim().length > 0;
   const isServerSearching = isSearching && !isUserTab;
 
-  // Determine source list based on tab
   const sourceList = useMemo((): MangaListItem[] => {
     if (isServerSearching) return searchResults;
     if (tab === 'latest-updates') return latestUpdates;
@@ -137,7 +125,6 @@ export default function LibraryPage() {
     return mangas;
   }, [tab, mangas, latestUpdates, latestNew, isServerSearching, searchResults]);
 
-  // Bootstrap: initialize seenChapterCounts for existing follows that lack an entry
   useEffect(() => {
     if (!isUserTab) return;
     const current = useProgressStore.getState().seenChapterCounts;
@@ -149,7 +136,6 @@ export default function LibraryPage() {
     }
   }, [isUserTab, tab, sourceList, followedSet, setSeenChapterCount]);
 
-  // "NEW" badge detection for library/favorites tabs (must be before filtered for sort)
   const newSlugs = useMemo(() => {
     if (!isUserTab) return new Set<string>();
     const slugs = new Set<string>();
@@ -178,7 +164,6 @@ export default function LibraryPage() {
       const filterSet = tab === 'favorites' ? favoriteSet : followedSet;
       const slugSource = tab === 'favorites' ? favoriteSlugs : followedSlugs;
       if (list.length === 0) {
-        // Catalogue not loaded yet — build minimal items from slugs
         list = slugSource.map((slug) => ({
           slug,
           title: formatMangaSlug(slug),
@@ -189,13 +174,11 @@ export default function LibraryPage() {
       } else {
         list = list.filter((m) => filterSet.has(m.slug));
       }
-      // Local title search for user tabs
       const q = search.trim().toLowerCase();
       if (q) {
         list = list.filter((m) => m.title.toLowerCase().includes(q));
       }
     }
-    // Sorting
     if (tab === 'all') {
       list = [...list].sort((a, b) => a.title.localeCompare(b.title));
     } else if (isUserTab && !isSearching) {
@@ -226,11 +209,9 @@ export default function LibraryPage() {
   }, [sourceList, tab, isUserTab, followedSet, followedSlugs, favoriteSet, favoriteSlugs, sortMode, isSearching, search, language, newSlugs, lastReadMap]);
 
 
-  // Infinite scroll: render in batches of PAGE_SIZE
   const filterKey = `${tab}-${language}-${search}`;
   const [scrollState, setScrollState] = useState({ count: PAGE_SIZE, key: filterKey });
 
-  // Reset when filters change (adjust state during render — React recommended pattern)
   if (scrollState.key !== filterKey) {
     setScrollState({ count: PAGE_SIZE, key: filterKey });
   }
@@ -258,276 +239,187 @@ export default function LibraryPage() {
     return () => observer.disconnect();
   }, [filtered.length, visibleCount]);
 
-  // Alphabetical grouping for "all" tab (sliced for infinite scroll)
-  const letterGroups = useMemo(() => {
-    if (tab !== 'all') return null;
-    const sliced = filtered.slice(0, visibleCount);
-    const groups: { letter: string; mangas: MangaListItem[] }[] = [];
-    let currentLetter = '';
-    for (const manga of sliced) {
-      const letter = getLetterKey(manga.title);
-      if (letter !== currentLetter) {
-        currentLetter = letter;
-        groups.push({ letter, mangas: [] });
-      }
-      groups[groups.length - 1].mangas.push(manga);
-    }
-    return groups;
-  }, [tab, filtered, visibleCount]);
-
-  const availableLetters = useMemo(() => {
-    if (!letterGroups) return new Set<string>();
-    return new Set(letterGroups.map((g) => g.letter));
-  }, [letterGroups]);
-
-  // Active letter tracking via IntersectionObserver
-  const [activeLetter, setActiveLetter] = useState<string | null>(null);
-  const letterRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-
-  const setLetterRef = useCallback((letter: string, el: HTMLDivElement | null) => {
-    if (el) {
-      letterRefs.current.set(letter, el);
-    } else {
-      letterRefs.current.delete(letter);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (tab !== 'all') return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const letter = (entry.target as HTMLElement).dataset.letter;
-            if (letter) setActiveLetter(letter);
-          }
-        }
-      },
-      { rootMargin: '-20% 0px -70% 0px' },
-    );
-
-    for (const el of letterRefs.current.values()) {
-      observer.observe(el);
-    }
-
-    return () => observer.disconnect();
-  }, [tab, letterGroups]);
-
-  const handleLetterClick = useCallback((letter: string) => {
-    const el = document.getElementById(`letter-${letter}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  const [headerVisible, setHeaderVisible] = useState(true);
-
   const isLatestTab = tab === 'latest-updates' || tab === 'latest-new';
   const loadingLatest = tab === 'latest-updates' ? loadingLatestUpdates : loadingLatestNew;
   const isLoading = searchLoading || (isLatestTab ? loadingLatest : loading);
 
   return (
     <div className="mx-auto max-w-lg pb-4">
+      {/* App Header */}
+      <div className="flex items-center justify-between px-4 pt-4 pb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink-cyan/10">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-cyan">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </div>
+          <h1 className="text-lg font-bold text-white tracking-tight">InkShelf</h1>
+        </div>
+        <span className="rounded-lg bg-ink-card px-2.5 py-1 text-[10px] font-medium text-zinc-500 border border-ink-border">
+          MangaDex
+        </span>
+      </div>
+
       {lastRead && !lastRead.completed && (
         <button
           type="button"
           onClick={() => router.push(`/read/${lastRead.mangaSlug}/${lastRead.chapterSlug}`)}
-          className="mx-4 mt-4 mb-4 w-[calc(100%-2rem)] rounded-xl bg-zinc-900 p-4 text-left transition-colors hover:bg-zinc-800 active:bg-zinc-700"
+          className="mx-4 mt-1 mb-4 w-[calc(100%-2rem)] rounded-xl bg-ink-card p-4 text-left transition-all duration-300 hover:bg-ink-surface border border-ink-border hover:border-ink-cyan/20 hover:shadow-[0_0_20px_rgba(0,212,255,0.06)]"
         >
-          <span className="text-xs font-medium uppercase tracking-wider text-orange-500">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-cyan">
             Continue Reading
           </span>
-          <p className="mt-1 text-sm font-medium text-white">
+          <p className="mt-1.5 text-sm font-medium text-white">
             {mangas.find((m) => m.slug === lastRead.mangaSlug)?.title ?? formatMangaSlug(lastRead.mangaSlug)} &mdash; {formatChapterSlug(lastRead.chapterSlug)}
           </p>
-          <div className="mt-2 flex items-center gap-3">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-700">
+          <div className="mt-2.5 flex items-center gap-3">
+            <div className="h-1 flex-1 overflow-hidden rounded-full bg-ink-border">
               <div
-                className="h-full rounded-full bg-orange-500 transition-all"
+                className="h-full rounded-full bg-gradient-to-r from-ink-cyan to-ink-cyan-dim transition-all"
                 style={{ width: `${lastRead.scrollPercent * 100}%` }}
               />
             </div>
-            <span className="shrink-0 text-xs text-orange-400">Continue</span>
+            <span className="shrink-0 text-[11px] font-medium text-ink-cyan">Continue</span>
           </div>
         </button>
       )}
 
-      {/* Sticky header with toggle */}
-      <div className="sticky top-0 z-20 bg-black">
-        <div
-          className={`overflow-hidden transition-all duration-200 ease-in-out ${
-            headerVisible ? 'max-h-64' : 'max-h-0'
-          }`}
-        >
-          <div className="flex flex-col gap-3 px-4 pt-3">
-            {/* Tabs */}
-            <div className="flex gap-1 overflow-x-auto rounded-lg bg-zinc-900 p-1 no-scrollbar">
-              {TABS.map((t) => (
-                <button
-                  key={t.value}
-                  type="button"
-                  onClick={() => setTab(t.value)}
-                  className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                    tab === t.value
-                      ? 'bg-orange-500 text-white'
-                      : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
+      {/* Sticky header */}
+      <div className="sticky top-0 z-20 bg-ink-bg/95 backdrop-blur-sm">
+        <div className="flex flex-col gap-3 px-4 pt-2 pb-3">
+          {/* Tabs — underline style */}
+          <div className="flex gap-0 border-b border-ink-border">
+            {TABS.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setTab(t.value)}
+                className={`relative px-3 py-2.5 text-xs font-medium transition-all duration-300 ${
+                  tab === t.value
+                    ? 'text-ink-cyan'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {t.label}
+                {tab === t.value && (
+                  <span className="absolute bottom-0 left-1/2 h-0.5 w-full -translate-x-1/2 rounded-full bg-ink-cyan shadow-[0_0_8px_rgba(0,212,255,0.4)]" />
+                )}
+              </button>
+            ))}
+          </div>
 
-            {/* Language selector */}
-            <div className="flex gap-1 rounded-lg bg-zinc-900 p-1">
-              {LANGUAGES.map((l) => (
-                <button
-                  key={l.value}
-                  type="button"
-                  onClick={() => setLanguage(l.value)}
-                  className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                    language === l.value
-                      ? 'bg-orange-500 text-white'
-                      : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
+          {/* Search */}
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500">
+              <SearchIcon />
             </div>
-
-            {/* Search */}
             <input
               type="text"
-              placeholder="Search manga..."
+              placeholder="Search comics..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-orange-500 transition-colors"
+              className="w-full rounded-xl border border-ink-border bg-ink-card pl-9 pr-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-ink-cyan/40 focus:bg-ink-surface focus:shadow-[0_0_0_3px_rgba(0,212,255,0.08)] transition-all duration-300"
             />
-
-            {/* Sort selector — user tabs only */}
-            {isUserTab && (
-              <div className="flex gap-1 overflow-x-auto rounded-lg bg-zinc-900 p-1 no-scrollbar">
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setSortMode(opt.value)}
-                    className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                      sortMode === opt.value
-                        ? 'bg-orange-500 text-white'
-                        : 'text-zinc-400 hover:text-white'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
-        </div>
 
-        {/* Toggle button */}
-        <button
-          type="button"
-          onClick={() => setHeaderVisible((v) => !v)}
-          className="flex w-full items-center justify-center py-1.5 text-zinc-500 transition-colors hover:text-zinc-300"
-        >
-          <ChevronIcon up={headerVisible} />
-        </button>
+          {/* Sort selector — user tabs only */}
+          {isUserTab && (
+            <div className="flex gap-1 overflow-x-auto no-scrollbar">
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setSortMode(opt.value)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all duration-300 ${
+                    sortMode === opt.value
+                      ? 'bg-ink-cyan/15 text-ink-cyan border border-ink-cyan/30'
+                      : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content area */}
       <div className="px-4">
-        {/* Loading — only show spinner if no data to display yet */}
+        {/* Loading — skeleton cards */}
         {isLoading && filtered.length === 0 && (
-          <div className="flex justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
+          <div className="grid grid-cols-2 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         )}
 
-        {/* Error — only show if no data available */}
+        {/* Error */}
         {error && !isLatestTab && !isSearching && filtered.length === 0 && (
-          <div className="rounded-lg bg-red-950 p-4 text-sm text-red-300">
+          <div className="rounded-xl bg-red-950/30 border border-red-900/20 p-4 text-sm text-red-300">
             {error}
           </div>
         )}
 
-        {/* Content — show whenever we have data or loading is done */}
+        {/* Content */}
         {(!isLoading || filtered.length > 0) && (
-          <>
-            {/* Alphabetical "all" tab with letter groups */}
-            {tab === 'all' && letterGroups ? (
-              <div className="relative">
-                <AlphaNav
-                  availableLetters={availableLetters}
-                  activeLetter={activeLetter}
-                  onLetterClick={handleLetterClick}
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.slice(0, visibleCount).map((manga, i) => (
+              <div key={manga.slug} className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}>
+                <MangaCard
+                  manga={manga}
+                  hasNew={isUserTab ? newSlugs.has(manga.slug) : undefined}
+                  showRemove={tab === 'my-library'}
+                  showChapterInfo={isLatestTab}
+                  isFavorite={isUserTab ? favoriteSet.has(manga.slug) : undefined}
+                  onToggleFavorite={isUserTab ? toggleFavorite : undefined}
                 />
-                <div className="pr-6">
-                  {letterGroups.map((group) => (
-                    <div key={group.letter}>
-                      <div
-                        id={`letter-${group.letter}`}
-                        data-letter={group.letter}
-                        ref={(el) => setLetterRef(group.letter, el)}
-                        className="sticky top-8 z-10 bg-black/80 py-1.5 backdrop-blur-sm"
-                      >
-                        <span className="text-xs font-bold text-orange-500">
-                          {group.letter}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 pb-2">
-                        {group.mangas.map((manga) => (
-                          <MangaCard key={manga.slug} manga={manga} />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  {filtered.length === 0 && (
-                    <p className="py-8 text-center text-sm text-zinc-500">
-                      No manga found.
-                    </p>
-                  )}
-                  {visibleCount < filtered.length && (
-                    <div ref={sentinelRef} className="flex justify-center py-4">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
-                    </div>
-                  )}
-                </div>
               </div>
-            ) : (
-              /* Standard grid for other tabs */
-              <div className="grid grid-cols-2 gap-3">
-                {filtered.slice(0, visibleCount).map((manga) => (
-                  <MangaCard
-                    key={manga.slug}
-                    manga={manga}
-                    hasNew={isUserTab ? newSlugs.has(manga.slug) : undefined}
-                    showRemove={tab === 'my-library'}
-                    showChapterInfo={isLatestTab}
-                    isFavorite={isUserTab ? favoriteSet.has(manga.slug) : undefined}
-                    onToggleFavorite={isUserTab ? toggleFavorite : undefined}
-                  />
-                ))}
-                {filtered.length === 0 && (
-                  <p className="col-span-2 py-8 text-center text-sm text-zinc-500">
-                    {tab === 'my-library'
-                      ? (isSearching ? 'No results.' : 'No manga started.')
-                      : tab === 'favorites'
-                        ? (isSearching ? 'No results.' : 'No favorites.')
-                        : isLatestTab
-                          ? 'No results.'
-                          : 'No manga found.'}
-                  </p>
-                )}
-                {visibleCount < filtered.length && (
-                  <div ref={sentinelRef} className="col-span-2 flex justify-center py-4">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
-                  </div>
+            ))}
+            {filtered.length === 0 && (
+              <div className="col-span-2 flex flex-col items-center py-20 text-center animate-fade-in">
+                {tab === 'my-library' && !isSearching ? (
+                  <>
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink-card border border-ink-border">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-zinc-400">Your library is empty</p>
+                    <p className="mt-1.5 text-xs text-zinc-600">Start exploring from the Browse tab</p>
+                  </>
+                ) : tab === 'favorites' && !isSearching ? (
+                  <>
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink-card border border-ink-border">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-zinc-400">No favorites yet</p>
+                    <p className="mt-1.5 text-xs text-zinc-600">Star titles you love to find them here</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink-card border border-ink-border">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                      </svg>
+                    </div>
+                    <p className="text-sm text-zinc-500">No results found</p>
+                  </>
                 )}
               </div>
             )}
-          </>
+            {visibleCount < filtered.length && (
+              <div ref={sentinelRef} className="col-span-2 flex justify-center py-6">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink-border border-t-ink-cyan" />
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

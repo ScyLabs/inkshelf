@@ -76,7 +76,7 @@ export default function NotificationsPanel() {
       type="button"
       onClick={handleToggle}
       disabled={isLoading || state === 'denied'}
-      className="flex w-full items-center justify-between rounded-xl bg-zinc-900 p-4"
+      className="flex w-full items-center justify-between rounded-xl bg-ink-card border border-ink-border p-4"
     >
       <div className="flex flex-col items-start">
         <span className="text-sm text-white">Push Notifications</span>
@@ -86,7 +86,7 @@ export default function NotificationsPanel() {
       </div>
       <div
         className={`relative h-6 w-11 rounded-full transition-colors ${
-          isEnabled ? 'bg-orange-500' : 'bg-zinc-700'
+          isEnabled ? 'bg-ink-cyan' : 'bg-zinc-700'
         } ${isLoading ? 'opacity-50' : ''}`}
       >
         <div

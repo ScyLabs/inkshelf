@@ -45,7 +45,7 @@ export default function ChapterCard({ entry, mangaSlug, progress, batchMode, onB
     <button
       type="button"
       onClick={() => batchMode && onBatchMark ? onBatchMark(entry.slug) : router.push(`/read/${mangaSlug}/${entry.slug}`)}
-      className={`w-full text-left rounded-xl bg-zinc-900 p-4 transition-colors hover:bg-zinc-800 active:bg-zinc-700${batchMode ? ' border-l-2 border-orange-500' : ''}`}
+      className={`w-full text-left rounded-xl bg-ink-card p-4 transition-all duration-200 hover:bg-ink-surface border border-ink-border${batchMode ? ' border-l-2 border-l-ink-cyan' : ''}`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 72px' }}
     >
       <div className="flex items-center justify-between gap-3">
@@ -66,17 +66,17 @@ export default function ChapterCard({ entry, mangaSlug, progress, batchMode, onB
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {batchMode ? (
-            <span className="text-xs font-medium text-orange-500">
-              Marquer jusqu&apos;ici
+            <span className="text-xs font-medium text-ink-cyan">
+              Mark up to here
             </span>
           ) : progress && !progress.completed && progress.totalPages > 0 ? (
             <div className="text-right">
               <span className="text-xs text-zinc-400">
                 {progress.currentPage + 1}/{progress.totalPages}
               </span>
-              <div className="mt-1 h-1 w-16 overflow-hidden rounded-full bg-zinc-700">
+              <div className="mt-1 h-1 w-16 overflow-hidden rounded-full bg-ink-border">
                 <div
-                  className="h-full rounded-full bg-orange-500 transition-all"
+                  className="h-full rounded-full bg-ink-cyan transition-all"
                   style={{ width: `${((progress.currentPage + 1) / progress.totalPages) * 100}%` }}
                 />
               </div>
@@ -101,11 +101,11 @@ export default function ChapterCard({ entry, mangaSlug, progress, batchMode, onB
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               ) : dlInProgress ? (
-                <span className="text-xs tabular-nums text-orange-400">
+                <span className="text-xs tabular-nums text-ink-cyan">
                   {activeProgress ? Math.round((activeProgress.done / activeProgress.total) * 100) : 0}%
                 </span>
               ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500 hover:text-orange-500 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500 hover:text-ink-cyan transition-colors">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />

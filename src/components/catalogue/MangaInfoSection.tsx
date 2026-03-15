@@ -20,11 +20,11 @@ export default function MangaInfoSection({ info, isLoading }: MangaInfoSectionPr
 
   if (isLoading) {
     return (
-      <div className="mb-4 animate-pulse rounded-xl bg-zinc-900 p-4">
-        <div className="mb-3 h-4 w-20 rounded bg-zinc-800" />
-        <div className="mb-2 h-3 w-48 rounded bg-zinc-800" />
-        <div className="mb-2 h-3 w-full rounded bg-zinc-800" />
-        <div className="h-3 w-3/4 rounded bg-zinc-800" />
+      <div className="mb-4 animate-pulse rounded-xl bg-ink-card p-4 border border-ink-border">
+        <div className="mb-3 h-4 w-20 rounded bg-ink-border/50" />
+        <div className="mb-2 h-3 w-48 rounded bg-ink-border/50" />
+        <div className="mb-2 h-3 w-full rounded bg-ink-border/50" />
+        <div className="h-3 w-3/4 rounded bg-ink-border/50" />
       </div>
     );
   }
@@ -36,10 +36,10 @@ export default function MangaInfoSection({ info, isLoading }: MangaInfoSectionPr
   const statusColors = info.status ? STATUS_COLORS[info.status] ?? { bg: 'bg-zinc-500/10', text: 'text-zinc-400' } : null;
 
   return (
-    <div className="mb-4 rounded-xl bg-zinc-900 p-4">
+    <div className="mb-4 rounded-xl bg-ink-card p-4 border border-ink-border">
       <div className="flex flex-wrap items-center gap-2">
         {info.status && statusColors && (
-          <span className={`rounded-md px-2 py-0.5 text-xs font-medium capitalize ${statusColors.bg} ${statusColors.text}`}>
+          <span className={`rounded-lg px-2 py-0.5 text-xs font-medium capitalize ${statusColors.bg} ${statusColors.text}`}>
             {info.status}
           </span>
         )}
@@ -52,13 +52,13 @@ export default function MangaInfoSection({ info, isLoading }: MangaInfoSectionPr
 
       {info.synopsis && (
         <div className="mt-3">
-          <p className={`text-xs text-zinc-400 ${expanded ? '' : 'line-clamp-3'}`}>
+          <p className={`text-xs text-zinc-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {info.synopsis}
           </p>
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="mt-1 text-xs font-medium text-orange-500"
+            className="mt-1 text-xs font-medium text-ink-cyan"
           >
             {expanded ? 'Show less' : 'Show more'}
           </button>
@@ -68,7 +68,7 @@ export default function MangaInfoSection({ info, isLoading }: MangaInfoSectionPr
       {info.genres.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {info.genres.map((genre) => (
-            <span key={genre} className="rounded-md bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+            <span key={genre} className="rounded-lg bg-ink-surface px-2 py-0.5 text-xs text-zinc-400 border border-ink-border">
               {genre}
             </span>
           ))}

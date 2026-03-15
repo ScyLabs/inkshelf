@@ -64,7 +64,7 @@ const ReaderImage = forwardRef<HTMLDivElement, ReaderImageProps>(
       <div ref={ref} className="relative w-full" data-page-index={index}>
         {!loaded && !failed && (
           <div className="flex h-[60vh] items-center justify-center bg-zinc-900">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-orange-500" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink-border border-t-ink-cyan" />
           </div>
         )}
         {failed && (
@@ -75,7 +75,7 @@ const ReaderImage = forwardRef<HTMLDivElement, ReaderImageProps>(
           >
             <div className="text-center">
               <p className="text-sm">Failed to load image</p>
-              <p className="mt-1 text-xs text-orange-500">Tap to retry</p>
+              <p className="mt-1 text-xs text-ink-cyan">Tap to retry</p>
             </div>
           </button>
         )}
